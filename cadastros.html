@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#111827" />
+  <title>Cadastros • Painel da Loja</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="cadastros.css" />
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="index.html"><span class="brand-mark"><svg viewBox="0 0 24 24"><path d="M4 14.5h3.1l2.2-5h5.2l1.6 2.5H20l1 2.5h-2.6a3.5 3.5 0 0 1-6.8.7H9.4a3.5 3.5 0 0 1-6.8-.7H2l.8-2.2L4 14.5Zm2.1 4a1.9 1.9 0 1 0 0-3.8 1.9 1.9 0 0 0 0 3.8Zm9 0a1.9 1.9 0 1 0 0-3.8 1.9 1.9 0 0 0 0 3.8ZM10.2 8l1-2.2h3.1V8h-4.1Z"/></svg></span><span><strong>Painel da Loja</strong><small>Peças & Oficina • Diadema</small></span></a>
+    <nav class="app-nav"><a href="index.html">Gestão</a><a href="caixa.html">Frente de caixa</a><a href="vendas.html">Vendas e orçamentos</a><a href="estoque.html">Estoque</a><a class="active" href="cadastros.html">Cadastros</a><a href="administrativo.html">🔒 Administrativo</a></nav>
+    <div class="record-actions"><button class="button button-primary" id="newRecordBtn">＋ Novo cliente</button><button class="button button-supplier" id="newSupplierBtn">＋ Novo fornecedor</button></div>
+  </header>
+
+  <main>
+    <section class="page-head">
+      <div><p class="eyebrow">Base da loja</p><h1>Clientes e fornecedores</h1><p>Use “Novo cliente” para quem compra na loja e “Novo fornecedor” para quem fornece suas peças.</p></div>
+      <label class="search-box"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input id="recordSearch" placeholder="Pesquisar nome, documento ou telefone..." /></label>
+    </section>
+
+    <section class="summary">
+      <article><span class="summary-icon clients">C</span><div><small>Clientes cadastrados</small><strong id="customerCount">0</strong></div></article>
+      <article><span class="summary-icon suppliers">F</span><div><small>Fornecedores cadastrados</small><strong id="supplierCount">0</strong></div></article>
+    </section>
+
+    <section class="records-shell">
+      <div class="records-head">
+        <div class="tabs"><button class="tab active" data-type="customer">Clientes</button><button class="tab" data-type="supplier">Fornecedores</button></div>
+        <span id="listSummary"></span>
+      </div>
+      <div class="table-wrap">
+        <table><thead id="recordsHead"></thead><tbody id="recordsBody"></tbody></table>
+      </div>
+    </section>
+  </main>
+
+  <dialog id="recordDialog">
+    <form method="dialog" id="recordForm">
+      <div class="modal-head"><div><p class="eyebrow" id="recordEyebrow">Cadastro de cliente</p><h2 id="recordTitle">Novo cliente</h2></div><button type="button" class="close-button" id="closeRecord">×</button></div>
+      <input type="hidden" id="recordId" />
+      <input type="hidden" id="recordType" value="customer" />
+      <div class="form-grid">
+        <label class="field wide"><span id="nameLabel">Nome do cliente</span><input id="recordName" required maxlength="100" /></label>
+        <label class="field">CPF/CNPJ<input id="recordDocument" maxlength="20" placeholder="Somente números ou formatado" /></label>
+        <label class="field">Telefone/WhatsApp<input id="recordPhone" maxlength="30" placeholder="(11) 99999-9999" /></label>
+        <label class="field wide">E-mail<input id="recordEmail" type="email" maxlength="100" /></label>
+        <label class="field wide">Endereço<input id="recordAddress" maxlength="140" placeholder="Rua, número e bairro" /></label>
+        <label class="field">Cidade<input id="recordCity" maxlength="60" value="Diadema" /></label>
+        <label class="field">Data de cadastro<input id="recordCreatedAt" readonly /></label>
+      </div>
+      <section id="customerFields">
+        <p class="section-label">Dados da moto</p>
+        <div class="form-grid"><label class="field">Moto/modelo<input id="customerVehicle" maxlength="70" placeholder="Ex.: Titan 160 2022" /></label><label class="field">Placa<input id="customerPlate" maxlength="10" placeholder="ABC1D23" /></label><label class="field wide">Cor da moto<input id="customerColor" maxlength="40" placeholder="Ex.: preta, vermelha ou prata" /></label></div>
+        <div class="customer-sales" id="customerSales">
+          <p class="section-label">Histórico de compras</p>
+          <div class="customer-sales-summary" id="customerSalesSummary"></div>
+          <div class="customer-sales-list" id="customerSalesList"></div>
+        </div>
+      </section>
+      <section id="supplierFields" hidden>
+        <p class="section-label">Dados comerciais</p>
+        <div class="form-grid"><label class="field">Pessoa de contato<input id="supplierContact" maxlength="70" /></label><label class="field">Condição de pagamento<input id="supplierTerms" maxlength="80" placeholder="Ex.: 28/35 dias" /></label></div>
+      </section>
+      <label class="field">Observações<textarea id="recordNotes" rows="3" maxlength="350"></textarea></label>
+      <div class="modal-actions"><button type="button" class="button button-danger" id="deleteRecord" hidden>Excluir</button><span></span><button type="button" class="button button-light" id="cancelRecord">Cancelar</button><button class="button button-primary" type="submit">Salvar cadastro</button></div>
+    </form>
+  </dialog>
+
+  <div class="toast" id="toast"></div>
+  <script src="cadastros.js"></script>
+</body>
+</html>

@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#111827" />
+  <title>Vendas e Orçamentos • Painel da Loja</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="orcamentos.css" />
+  <link rel="stylesheet" href="vendas.css" />
+  <link rel="stylesheet" href="movimentos.css" />
+  <link rel="stylesheet" href="vendas-cancelamento.css" />
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="index.html"><span class="brand-mark"><svg viewBox="0 0 24 24"><path d="M4 14.5h3.1l2.2-5h5.2l1.6 2.5H20l1 2.5h-2.6a3.5 3.5 0 0 1-6.8.7H9.4a3.5 3.5 0 0 1-6.8-.7H2l.8-2.2L4 14.5Zm2.1 4a1.9 1.9 0 1 0 0-3.8 1.9 1.9 0 0 0 0 3.8Zm9 0a1.9 1.9 0 1 0 0-3.8 1.9 1.9 0 0 0 0 3.8ZM10.2 8l1-2.2h3.1V8h-4.1Z"/></svg></span><span><strong>Painel da Loja</strong><small>Peças & Oficina • Diadema</small></span></a>
+    <nav class="app-nav"><a href="index.html">Gestão</a><a href="caixa.html">Frente de caixa</a><a class="active" href="vendas.html">Vendas e orçamentos</a><a href="estoque.html">Estoque</a><a href="cadastros.html">Cadastros</a><a href="administrativo.html">🔒 Administrativo</a></nav>
+    <a class="button button-primary" id="newMovementAction" href="caixa.html">＋ Nova venda</a>
+  </header>
+
+  <main>
+    <section class="page-head">
+      <div><p class="eyebrow" id="viewEyebrow">Histórico completo</p><h1 id="viewTitle">Vendas e orçamentos</h1><p id="viewSubtitle">Consulte as vendas concluídas ou acompanhe as motos da oficina.</p></div>
+    </section>
+
+    <nav class="module-tabs" aria-label="Escolher visão">
+      <button class="module-tab active" data-view="sales"><span>✓</span><strong>Vendas concluídas</strong><small>Histórico por dia e horário</small></button>
+      <button class="module-tab" data-view="quotes"><span>▤</span><strong>Orçamentos e oficina</strong><small>A fazer, em andamento e concluídos</small></button>
+    </nav>
+
+    <section id="salesView">
+      <aside class="customer-filter" id="customerFilter" hidden><span>Mostrando compras de <strong id="customerFilterName"></strong></span><button id="clearCustomerFilter">Ver todos os clientes</button></aside>
+
+      <section class="summary" aria-label="Resumo das vendas">
+        <article><span class="summary-icon blue">#</span><div><small>Vendas exibidas</small><strong id="salesCount">0</strong></div></article>
+      </section>
+
+      <section class="sales-shell">
+        <div class="filters">
+          <label class="search-box"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input id="saleSearch" placeholder="Venda, cliente, produto ou operador..." /></label>
+          <label class="filter-field"><span>De</span><input id="dateFrom" type="date" /></label>
+          <label class="filter-field"><span>Até</span><input id="dateTo" type="date" /></label>
+          <label class="filter-field payment-filter"><span>Pagamento</span><select id="paymentFilter"><option value="">Todos</option><option>Dinheiro</option><option>Pix</option><option>Débito</option><option>Crédito</option></select></label>
+          <button class="button button-light" id="clearFilters">Limpar</button>
+        </div>
+        <div class="result-info"><strong id="resultCount">0 vendas</strong><span>Do registro mais recente para o mais antigo</span></div>
+        <div class="sales-groups" id="salesGroups"></div>
+      </section>
+    </section>
+
+    <section id="quotesView" hidden>
+      <div class="quotes-toolbar">
+        <div><strong>Motos e serviços da oficina</strong><small>Arraste para mudar o estado ou clique no cartão para editar e excluir.</small></div>
+        <label class="search-box"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input id="quoteSearch" placeholder="Cliente, descrição, moto ou placa..." /></label>
+      </div>
+      <section class="stats">
+        <article><i class="todo"></i><span><small>A fazer</small><strong id="todoCount">0</strong></span></article>
+        <article><i class="doing"></i><span><small>Em andamento</small><strong id="doingCount">0</strong></span></article>
+        <article><i class="waiting"></i><span><small>Aguardando</small><strong id="waitingCount">0</strong></span></article>
+        <article><i class="done"></i><span><small>Concluídos</small><strong id="doneCount">0</strong></span></article>
+      </section>
+      <section class="board-shell">
+        <div class="board-note"><span>Crie um orçamento rápido só com a descrição do pedido</span><a href="caixa.html">Para incluir peças e valores, monte o orçamento no caixa</a></div>
+        <div class="board" id="quoteBoard"></div>
+      </section>
+    </section>
+  </main>
+
+  <dialog id="saleDialog">
+    <div class="sale-detail">
+      <div class="modal-head"><div><p class="eyebrow">Venda <span id="detailNumber"></span></p><h2>Detalhes da venda</h2></div><button class="close-button" id="closeSale" aria-label="Fechar">×</button></div>
+      <div class="detail-meta" id="detailMeta"></div><div class="detail-items" id="detailItems"></div><div class="detail-totals" id="detailTotals"></div>
+      <p class="non-fiscal">Registro interno • não é documento fiscal</p>
+      <div class="modal-actions"><button class="button button-danger" id="cancelSale">Excluir venda e devolver ao estoque</button><span></span><button class="button button-light" id="closeSaleFooter">Fechar</button><button class="button button-primary" id="printSale">Imprimir comprovante</button></div>
+    </div>
+  </dialog>
+
+  <dialog id="cancelSaleDialog" class="confirm-dialog"><div class="confirm-sale"><div class="confirm-icon" aria-hidden="true">↩</div><p class="eyebrow">Confirmar devolução</p><h2>Excluir a venda <span id="cancelSaleNumber"></span>?</h2><p id="cancelSaleMessage"></p><small>A venda sairá do histórico e esta ação não poderá ser desfeita.</small><div class="confirm-actions"><button type="button" class="button button-light" id="keepSale">Não, manter venda</button><button type="button" class="button button-danger" id="confirmCancelSale">Sim, excluir e devolver</button></div></div></dialog>
+
+  <dialog id="quoteEditDialog">
+    <form method="dialog" id="quoteEditForm">
+      <div class="modal-head"><div><p class="eyebrow">Orçamento <span id="editQuoteNumber"></span></p><h2>Detalhes do serviço</h2></div><button type="button" class="close-button" id="closeEdit">×</button></div>
+      <input type="hidden" id="editQuoteId" />
+      <div class="form-grid">
+        <label class="field wide">Cliente<input id="editCustomer" list="customerSuggestions" required maxlength="80" /></label>
+        <label class="field">Telefone/WhatsApp<input id="editPhone" maxlength="30" /></label>
+        <label class="field">Estado<select id="editStatus"><option value="todo">A fazer</option><option value="doing">Em andamento</option><option value="waiting">Aguardando</option><option value="done">Concluído</option></select></label>
+        <label class="field">Moto/modelo<input id="editVehicle" maxlength="70" /></label><label class="field">Placa<input id="editPlate" maxlength="10" /></label>
+        <label class="field">Validade<input id="editValidUntil" type="date" required /></label><label class="field wide">Observações<textarea id="editNotes" rows="3" maxlength="300"></textarea></label>
+      </div>
+      <section class="quote-item-editor"><div class="quote-editor-title"><strong>Peças e mão de obra</strong><small>Adicione agora ou volte depois para continuar.</small></div><div class="quote-add-row"><select id="quoteProductSelect" aria-label="Escolher peça ou mão de obra"></select><input id="quoteItemQty" type="number" min="1" value="1" aria-label="Quantidade" /><button type="button" class="button button-light" id="addQuoteProduct">Adicionar</button></div><div class="quote-add-row labor-row"><input id="quoteLaborName" maxlength="80" placeholder="Mão de obra avulsa" aria-label="Descrição da mão de obra" /><input id="quoteLaborPrice" inputmode="decimal" placeholder="Valor" aria-label="Valor da mão de obra" /><button type="button" class="button button-light" id="addQuoteLabor">Adicionar mão de obra</button></div></section>
+      <div class="quote-items" id="editQuoteItems"></div><div class="quote-total"><span>Total do orçamento</span><strong id="editQuoteTotal">R$ 0,00</strong></div>
+      <div class="modal-actions"><button type="button" class="button button-danger" id="deleteQuote">Excluir moto e tarefa</button><span></span><button type="button" class="button button-light" id="sendToCash">Adicionar peças / fechar venda</button><button class="button button-primary" type="submit">Salvar alterações</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="quickQuoteDialog">
+    <form method="dialog" id="quickQuoteForm" class="quick-quote-form">
+      <div class="modal-head"><div><p class="eyebrow">Sem venda e sem peças</p><h2>Novo orçamento por descrição</h2><p class="modal-helper">O único campo obrigatório é a descrição do que o cliente pediu.</p></div><button type="button" class="close-button" id="closeQuickQuote" aria-label="Fechar">×</button></div>
+      <div class="form-grid">
+        <label class="field wide request-field">Descrição do pedido<textarea id="quickQuoteDescription" rows="6" maxlength="600" required placeholder="Ex.: Cliente pediu para verificar o barulho na dianteira e passar o orçamento antes de fazer o serviço."></textarea><small>Este registro não será contado como venda e não movimentará o estoque.</small></label>
+        <div class="optional-fields-title wide">Informações opcionais</div>
+        <label class="field wide">Cliente<input id="quickQuoteCustomer" list="customerSuggestions" maxlength="80" placeholder="Nome do cliente, se quiser informar" /></label>
+        <label class="field">Telefone/WhatsApp<input id="quickQuotePhone" maxlength="30" placeholder="(11) 99999-9999" /></label>
+        <label class="field">Validade<input id="quickQuoteValidUntil" type="date" required /></label>
+        <label class="field">Moto/modelo<input id="quickQuoteVehicle" maxlength="70" placeholder="Ex.: Titan 160 2022" /></label>
+        <label class="field">Placa<input id="quickQuotePlate" maxlength="10" placeholder="ABC1D23" /></label>
+      </div>
+      <div class="modal-actions"><button type="button" class="button button-light" id="cancelQuickQuote">Cancelar</button><span></span><button class="button button-primary" type="submit">Salvar orçamento</button></div>
+    </form>
+  </dialog>
+
+  <div class="toast" id="toast"></div>
+  <datalist id="customerSuggestions"></datalist>
+  <script src="vendas.js"></script>
+  <script src="orcamentos.js"></script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+.confirm-dialog{width:min(430px,calc(100vw - 28px))}
+.confirm-sale{padding:27px;text-align:center}
+.confirm-icon{width:52px;height:52px;margin:0 auto 14px;border-radius:15px;display:grid;place-items:center;color:#d92d20;background:#fff0ef;font-size:25px;font-weight:800}
+.confirm-sale h2{margin:0;font-size:20px}
+.confirm-sale>p:not(.eyebrow){margin:10px 0 5px;color:#394456;font-size:13px}
+.confirm-sale>small{display:block;color:var(--muted);font-size:10px}
+.confirm-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:21px}
+.confirm-actions .button-danger{color:#fff;background:#d92d20}
+.confirm-actions button:disabled{opacity:.65;cursor:wait}
+@media(max-width:680px){.confirm-actions{grid-template-columns:1fr}}

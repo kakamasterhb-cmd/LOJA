@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#111827" />
+  <title>Agente IA • Painel da Loja</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="agente.css" />
+</head>
+<body>
+  <header class="topbar">
+    <a class="back" href="painel.html">← Voltar ao painel</a>
+    <div class="brand"><span>✦</span><div><strong>Agente da Loja</strong><small>Assistente privado • La Moto Peças</small></div></div>
+    <span class="privacy">🔒 Dados protegidos</span>
+  </header>
+
+  <main>
+    <aside class="side">
+      <p class="eyebrow">Assistente de gestão</p>
+      <h1>Como posso ajudar?</h1>
+      <p class="intro">O agente usa os dados salvos no painel para ajudar você a entender e organizar a loja.</p>
+      <div class="suggestions">
+        <button data-question="Quais produtos estão com estoque baixo ou esgotados?">Ver estoque baixo</button>
+        <button data-question="Resuma as tarefas atrasadas e diga o que devo priorizar hoje.">Prioridades de hoje</button>
+        <button data-question="Analise os orçamentos em aberto e me diga quais precisam de acompanhamento.">Orçamentos em aberto</button>
+        <button data-question="Faça um resumo da loja com os principais pontos que precisam de atenção.">Resumo da loja</button>
+      </div>
+      <div class="notice"><strong>Importante</strong><span>O agente consulta e orienta. Ele não altera vendas, estoque ou caixa sozinho.</span></div>
+    </aside>
+
+    <section class="chat" aria-label="Conversa com o agente">
+      <div class="messages" id="messages" aria-live="polite">
+        <article class="message assistant"><span class="avatar">✦</span><div><strong>Agente da Loja</strong><p>Olá, Caio. Posso conferir estoque, tarefas, vendas e orçamentos com base nas informações do painel. O que você quer analisar?</p></div></article>
+      </div>
+      <form id="chatForm" class="composer">
+        <label for="prompt">Pergunte sobre a loja</label>
+        <div><textarea id="prompt" rows="2" maxlength="1200" placeholder="Ex.: O que precisa da minha atenção hoje?" required></textarea><button type="submit" aria-label="Enviar pergunta">Enviar</button></div>
+        <small>Confira valores e informações importantes antes de tomar uma decisão.</small>
+      </form>
+    </section>
+  </main>
+  <script type="module" src="cloud-data.js" data-cloud-entry="agente.js"></script>
+</body>
+</html>

@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#111827" />
+  <title>Frente de Caixa • Painel da Loja</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="caixa.css" />
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="index.html">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M4 14.5h3.1l2.2-5h5.2l1.6 2.5H20l1 2.5h-2.6a3.5 3.5 0 0 1-6.8.7H9.4a3.5 3.5 0 0 1-6.8-.7H2l.8-2.2L4 14.5Zm2.1 4a1.9 1.9 0 1 0 0-3.8 1.9 1.9 0 0 0 0 3.8Zm9 0a1.9 1.9 0 1 0 0-3.8 1.9 1.9 0 0 0 0 3.8ZM10.2 8l1-2.2h3.1V8h-4.1Z"/></svg>
+      </span>
+      <span><strong>Painel da Loja</strong><small>Peças & Oficina • Diadema</small></span>
+    </a>
+    <nav class="app-nav" aria-label="Áreas do sistema">
+      <a href="index.html">Gestão</a>
+      <a href="administrativo.html">🔒 Administrativo</a>
+      <a class="active" href="caixa.html">Frente de caixa</a>
+      <a href="vendas.html">Vendas e orçamentos</a>
+      <a href="estoque.html">Estoque</a>
+      <a href="cadastros.html">Cadastros</a>
+    </nav>
+    <div class="session-area">
+      <span class="fiscal-badge">Sem emissão fiscal</span>
+      <button class="button button-session" id="sessionBtn">Abrir caixa</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="page-head">
+      <div>
+        <p class="eyebrow">Operação de balcão</p>
+        <h1>Frente de caixa</h1>
+        <p id="sessionSubtitle">Abra o caixa para começar a registrar vendas.</p>
+      </div>
+      <div class="head-actions">
+        <button class="button button-light" id="historyBtn">Histórico</button>
+        <button class="button button-light" id="productsBtn">Produtos</button>
+        <button class="button button-light" id="servicesBtn">Mão de obra</button>
+        <button class="button button-primary" id="importBtn">Importar do SIC</button>
+      </div>
+    </section>
+
+    <section class="summary-strip" aria-label="Resumo do caixa">
+      <article><span class="summary-icon blue">#</span><div><small>Atendimentos</small><strong id="salesCount">0</strong></div></article>
+      <article><span class="summary-icon red">!</span><div><small>Estoque baixo</small><strong id="lowStockCount">0 itens</strong></div></article>
+    </section>
+
+    <section class="pos-layout">
+      <div class="catalog-panel">
+        <div class="catalog-toolbar">
+          <label class="search-box">
+            <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
+            <input id="productSearch" autocomplete="off" placeholder="Código, produto ou moto compatível..." />
+            <kbd>F2</kbd>
+          </label>
+          <button class="icon-text-button" id="newProductBtn">＋ Produto</button>
+          <button class="icon-text-button" id="customItemBtn">＋ Mão de obra</button>
+        </div>
+        <div class="category-tabs" id="categoryTabs"></div>
+        <div class="catalog-list" id="catalogList"></div>
+      </div>
+
+      <aside class="cart-panel">
+        <div class="cart-head">
+          <div><p class="eyebrow">Venda atual</p><h2 id="saleNumber">Nova venda</h2></div>
+          <button class="link-button danger" id="clearCartBtn">Limpar</button>
+        </div>
+        <label class="customer-field">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+          <input id="customerName" list="customerSuggestions" placeholder="Cliente (opcional)" />
+          <span class="customer-match" id="customerMatch" hidden>✓ Cadastrado</span>
+        </label>
+        <div class="cart-items" id="cartItems"></div>
+        <div class="cart-totals">
+          <div><span>Subtotal</span><strong id="subtotal">R$ 0,00</strong></div>
+          <label><span>Desconto</span><span class="money-input">R$ <input id="discountInput" inputmode="decimal" value="0,00" /></span></label>
+          <div class="grand-total"><span>Total</span><strong id="grandTotal">R$ 0,00</strong></div>
+        </div>
+        <div class="payment-area">
+          <span class="field-title">Forma de pagamento</span>
+          <div class="payment-options" id="paymentOptions">
+            <button data-payment="Dinheiro">Dinheiro</button><button data-payment="Pix">Pix</button><button data-payment="Débito">Débito</button><button data-payment="Crédito">Crédito</button>
+          </div>
+          <label class="received-field" id="receivedField" hidden><span>Valor recebido</span><span class="money-input large">R$ <input id="receivedInput" inputmode="decimal" placeholder="0,00" /></span></label>
+          <div class="change-row" id="changeRow" hidden><span>Troco</span><strong id="changeValue">R$ 0,00</strong></div>
+        </div>
+        <div class="finish-actions">
+          <button class="quote-button" id="quoteBtn">Salvar orçamento (sem vender)</button>
+          <button class="checkout-button" id="checkoutBtn" disabled><span>Finalizar venda</span><strong id="checkoutTotal">R$ 0,00</strong></button>
+        </div>
+        <p class="shortcut">Pressione <kbd>F4</kbd> para finalizar</p>
+      </aside>
+    </section>
+  </main>
+
+  <dialog id="sessionDialog">
+    <form method="dialog" id="sessionForm" class="modal-form">
+      <div class="modal-head"><div><p class="eyebrow">Controle diário</p><h2 id="sessionModalTitle">Abrir caixa</h2></div><button type="button" class="close-button" data-close="sessionDialog">×</button></div>
+      <div id="openSessionFields">
+        <label class="field">Operador<input id="operatorName" required value="Caio" maxlength="40" /></label>
+        <label class="field">Fundo de troco<span class="prefixed-input">R$ <input id="openingAmount" inputmode="decimal" required value="0,00" /></span></label>
+      </div>
+      <div id="closeSessionFields" hidden>
+        <div class="close-summary" id="closeSummary"></div>
+        <label class="field">Dinheiro contado na gaveta<span class="prefixed-input">R$ <input id="countedAmount" inputmode="decimal" value="0,00" /></span></label>
+      </div>
+      <div class="modal-actions"><button type="button" class="button button-light" data-close="sessionDialog">Cancelar</button><button class="button button-primary" type="submit" id="sessionSubmit">Abrir caixa</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="productDialog">
+    <form method="dialog" id="productForm" class="modal-form">
+      <div class="modal-head"><div><p class="eyebrow">Catálogo</p><h2 id="productModalTitle">Cadastrar produto</h2></div><button type="button" class="close-button" data-close="productDialog">×</button></div>
+      <input type="hidden" id="productId" />
+      <div class="form-grid">
+        <label class="field wide">Descrição<input id="productName" required maxlength="90" placeholder="Ex.: Óleo 10W30 1L" /></label>
+        <label class="field">Código<input id="productCode" maxlength="30" placeholder="00125" /></label>
+        <label class="field">Código de barras<input id="productBarcode" maxlength="40" /></label>
+        <label class="field">Categoria<input id="productCategory" maxlength="40" placeholder="Óleos" /></label>
+        <label class="field">Fornecedor<input id="productSupplier" list="supplierSuggestions" maxlength="70" placeholder="Ex.: Distribuidora ABC" /></label>
+        <label class="field">Localização no estoque<input id="productLocation" maxlength="50" placeholder="Ex.: Corredor A • Prateleira 3" /></label>
+        <label class="field wide">Motos compatíveis<input id="productCompatible" maxlength="250" placeholder="Ex.: Titan 150 2009–2013, Titan 160 2016–2026, Fan 160" /></label>
+        <label class="field">Preço de custo<span class="prefixed-input">R$ <input id="productCost" required inputmode="decimal" value="0,00" /></span></label>
+        <label class="field">Porcentagem sobre o custo<span class="suffixed-input"><input id="productMarkup" type="number" min="0" max="10000" step="0.01" placeholder="Ex.: 50" /> %</span><small>Ex.: custo R$ 100 + 50% = venda R$ 150</small></label>
+        <label class="field">Preço de venda<span class="prefixed-input">R$ <input id="productPrice" required inputmode="decimal" /></span></label>
+        <div class="price-calculation wide" id="priceCalculation"><span>Preencha o custo e a porcentagem para calcular.</span></div>
+        <label class="field">Estoque<input id="productStock" type="number" min="0" step="1" value="0" required /></label>
+        <label class="field">Estoque mínimo<input id="productMinStock" type="number" min="0" step="1" value="2" required /></label>
+        <label class="field">Data de cadastro<input id="productCreatedAt" readonly value="Será registrada ao salvar" /></label>
+      </div>
+      <div class="modal-actions"><button class="button button-danger" type="button" id="deleteProduct" hidden>Excluir</button><span></span><button type="button" class="button button-light" data-close="productDialog">Cancelar</button><button class="button button-primary" type="submit">Salvar produto</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="customItemDialog" class="small-dialog">
+    <form method="dialog" id="customItemForm" class="modal-form small-modal">
+      <div class="modal-head"><div><p class="eyebrow">Sem estoque e sem quantidade</p><h2>Adicionar mão de obra</h2></div><button type="button" class="close-button" data-close="customItemDialog">×</button></div>
+      <label class="field">Descrição<input id="customItemName" required placeholder="Ex.: Mão de obra — troca de relação" /></label>
+      <label class="field">Valor<span class="prefixed-input">R$ <input id="customItemPrice" inputmode="decimal" required /></span></label>
+      <label class="check-field"><input id="saveService" type="checkbox" checked /> Salvar na aba “Mão de obra” para usar novamente</label>
+      <div class="modal-actions"><button type="button" class="button button-light" data-close="customItemDialog">Cancelar</button><button class="button button-primary" type="submit">Adicionar à venda</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="quoteDialog">
+    <form method="dialog" id="quoteForm" class="modal-form">
+      <div class="modal-head"><div><p class="eyebrow">Entrada da oficina</p><h2>Salvar orçamento</h2></div><button type="button" class="close-button" data-close="quoteDialog">×</button></div>
+      <div class="quote-total"><span>Total do orçamento</span><strong id="quoteTotal">R$ 0,00</strong></div>
+      <div class="form-grid">
+        <div class="field wide quote-customer-field">
+          <label for="quoteCustomer">Cliente</label>
+          <input id="quoteCustomer" list="customerSuggestions" maxlength="80" placeholder="Nome do cliente (opcional)" />
+          <small id="quoteCustomerStatus">Você pode salvar apenas a descrição ou selecionar um cliente.</small>
+        </div>
+        <label class="field">Telefone/WhatsApp<input id="quotePhone" maxlength="30" placeholder="(11) 99999-9999" /></label>
+        <label class="field">Prazo de validade<input id="quoteValidUntil" type="date" required /></label>
+        <label class="field">Moto/modelo<input id="quoteVehicle" maxlength="70" placeholder="Ex.: Titan 160 2022" /></label>
+        <label class="field">Placa<input id="quotePlate" maxlength="10" placeholder="ABC1D23" /></label>
+        <label class="field wide">Cor da moto<input id="quoteColor" maxlength="40" placeholder="Ex.: preta, vermelha ou prata" /></label>
+        <button class="button quick-customer-open wide" type="button" id="quickCustomerToggle">＋ Salvar este cliente com todos os dados</button>
+        <section class="quick-customer wide" id="quickCustomerPanel" hidden>
+          <div><strong>Complete o cadastro</strong><span>Nome, telefone, moto, placa e cor já serão salvos automaticamente.</span></div>
+          <div class="quick-customer-grid">
+            <label class="field">CPF/CNPJ <small>opcional</small><input id="quickCustomerDocument" maxlength="20" placeholder="Somente números ou formatado" /></label>
+            <label class="field">E-mail <small>opcional</small><input id="quickCustomerEmail" type="email" maxlength="100" placeholder="cliente@email.com" /></label>
+          </div>
+          <button class="button button-primary" type="button" id="saveQuickCustomer">Salvar cadastro completo do cliente</button>
+        </section>
+        <label class="field wide">Descrição do pedido<textarea id="quoteNotes" rows="4" maxlength="600" required placeholder="Descreva o que o cliente pediu, mesmo sem adicionar peças."></textarea><small>Se o carrinho estiver vazio, será salvo somente como orçamento por descrição.</small></label>
+      </div>
+      <div class="modal-actions"><button type="button" class="button button-light" data-close="quoteDialog">Cancelar</button><button class="button button-primary" id="quoteSubmitButton" type="submit">Criar orçamento</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="importDialog" class="import-dialog">
+    <form method="dialog" id="importForm" class="modal-form import-modal">
+      <div class="modal-head"><div><p class="eyebrow">Catálogo do SIC</p><h2>Importar produtos do SIC</h2><small>Exporte os produtos no SIC em CSV e selecione o arquivo aqui. Itens com o mesmo código ou EAN serão atualizados.</small></div><button type="button" class="close-button" data-close="importDialog">×</button></div>
+      <div class="import-drop" id="importDrop">
+        <span class="upload-icon">⇧</span><strong>Escolha a planilha exportada pelo SIC</strong><small>Arquivo CSV com código, descrição, preço e estoque</small>
+        <input id="csvFile" type="file" accept=".csv,.txt,text/csv" />
+        <button type="button" class="button button-light" id="chooseFileBtn">Selecionar arquivo</button>
+      </div>
+      <div id="mappingArea" hidden>
+        <div class="file-summary"><span id="fileName"></span><strong id="rowCount"></strong></div>
+        <p class="helper">Confira quais colunas do SIC correspondem aos campos do caixa.</p>
+        <div class="mapping-grid" id="mappingGrid"></div>
+        <label class="check-field"><input id="replaceCatalog" type="checkbox" /> Apagar o catálogo atual antes de importar</label>
+      </div>
+      <div class="modal-actions"><button type="button" class="button button-light" data-close="importDialog">Cancelar</button><button class="button button-primary" type="submit" id="runImportBtn" disabled>Importar produtos</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="productsDialog" class="large-dialog">
+    <div class="modal-form large-modal">
+      <div class="modal-head"><div><p class="eyebrow" id="productsDialogEyebrow">Estoque</p><h2 id="productsDialogTitle">Produtos cadastrados</h2></div><button type="button" class="close-button" data-close="productsDialog">×</button></div>
+      <div class="table-wrap"><table><thead><tr><th>Código</th><th>Produto</th><th>Motos compatíveis</th><th>Fornecedor</th><th>Localização</th><th>Cadastro</th><th>Estoque</th><th>Preço</th><th></th></tr></thead><tbody id="productsTable"></tbody></table></div>
+    </div>
+  </dialog>
+
+  <dialog id="historyDialog" class="large-dialog">
+    <div class="modal-form large-modal">
+      <div class="modal-head"><div><p class="eyebrow">Movimento</p><h2>Histórico de vendas</h2></div><button type="button" class="close-button" data-close="historyDialog">×</button></div>
+      <div id="historyList" class="history-list"></div>
+    </div>
+  </dialog>
+
+  <dialog id="receiptDialog" class="receipt-dialog">
+    <div class="modal-form receipt-modal">
+      <div class="receipt" id="receiptContent"></div>
+      <div class="modal-actions"><button type="button" class="button button-light" data-close="receiptDialog">Fechar</button><button type="button" class="button button-primary" id="printReceiptBtn">Imprimir comprovante</button></div>
+    </div>
+  </dialog>
+
+  <div class="toast" id="toast" role="status"></div>
+  <datalist id="customerSuggestions"></datalist>
+  <datalist id="supplierSuggestions"></datalist>
+  <script type="module" src="cloud-data.js" data-cloud-entry="caixa.js"></script>
+</body>
+</html>

@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#111827" />
+  <title>Painel da Loja</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="Início">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" role="img"><path d="M4 14.5h3.1l2.2-5h5.2l1.6 2.5H20l1 2.5h-2.6a3.5 3.5 0 0 1-6.8.7H9.4a3.5 3.5 0 0 1-6.8-.7H2l.8-2.2L4 14.5Zm2.1 4a1.9 1.9 0 1 0 0-3.8 1.9 1.9 0 0 0 0 3.8Zm9 0a1.9 1.9 0 1 0 0-3.8 1.9 1.9 0 0 0 0 3.8ZM10.2 8l1-2.2h3.1V8h-4.1Z"/></svg>
+        </span>
+        <span><strong>Painel da Loja</strong><small>Peças & Oficina • Diadema</small></span>
+      </a>
+      <div class="header-actions">
+        <a class="btn btn-owner" href="administrativo.html">🔒 Administrativo</a>
+        <a class="btn btn-secondary nav-cash" href="caixa.html">▣ Frente de caixa</a>
+        <a class="btn btn-secondary nav-cash" href="vendas.html">Vendas e orçamentos</a>
+        <a class="btn btn-secondary nav-cash" href="estoque.html">Estoque</a>
+        <a class="btn btn-secondary nav-cash" href="cadastros.html">Cadastros</a>
+        <a class="btn btn-ai nav-cash" href="agente.html">✦ Agente IA</a>
+        <span class="save-status"><i></i> Guardado automaticamente</span>
+        <button class="btn btn-primary" id="newTaskBtn"><span>＋</span> Nova tarefa</button>
+      </div>
+    </header>
+
+    <main>
+      <section class="welcome-row">
+        <div>
+          <p class="eyebrow" id="todayLabel"></p>
+          <h1>Bom trabalho, Caio.</h1>
+          <p>Veja o que pede atenção e organize a equipa sem perder nada de vista.</p>
+        </div>
+        <div class="mobile-actions">
+          <a class="btn btn-mobile-cash" href="administrativo.html">Adm.</a>
+          <a class="btn btn-mobile-cash" href="caixa.html">Caixa</a>
+          <a class="btn btn-mobile-cash" href="vendas.html">Vendas/OS</a>
+          <a class="btn btn-mobile-cash" href="estoque.html">Estoque</a>
+          <a class="btn btn-mobile-cash" href="cadastros.html">Cad.</a>
+          <a class="btn btn-mobile-cash" href="agente.html">✦ IA</a>
+          <button class="btn btn-mobile-add" id="mobileNewTaskBtn">＋ Nova tarefa</button>
+        </div>
+      </section>
+
+      <section class="stats" aria-label="Resumo das tarefas">
+        <button class="stat-card stat-overdue" data-quick-filter="overdue">
+          <span class="stat-icon">!</span>
+          <span><strong id="overdueCount">0</strong><small>Atrasadas</small></span>
+          <em>Ver tarefas →</em>
+        </button>
+        <button class="stat-card stat-today" data-quick-filter="today">
+          <span class="stat-icon">
+            <svg viewBox="0 0 24 24"><path d="M7 3v3m10-3v3M4 9h16M5 5h14a1 1 0 0 1 1 1v14H4V6a1 1 0 0 1 1-1Z"/></svg>
+          </span>
+          <span><strong id="todayCount">0</strong><small>Para hoje</small></span>
+          <em>Ver tarefas →</em>
+        </button>
+        <button class="stat-card stat-progress" data-quick-filter="progress">
+          <span class="stat-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 8v4l3 2m6-2a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
+          </span>
+          <span><strong id="progressCount">0</strong><small>Em andamento</small></span>
+          <em>Ver tarefas →</em>
+        </button>
+        <button class="stat-card stat-done" data-quick-filter="done">
+          <span class="stat-icon">
+            <svg viewBox="0 0 24 24"><path d="m6 12 4 4 8-9"/></svg>
+          </span>
+          <span><strong id="doneCount">0</strong><small>Concluídas</small></span>
+          <em>Ver tarefas →</em>
+        </button>
+      </section>
+
+      <section class="workspace">
+        <div class="workspace-head">
+          <div class="tabs" role="tablist" aria-label="Áreas">
+            <button class="tab active" data-area="all" role="tab">Todas</button>
+            <button class="tab" data-area="Oficina e funcionários" role="tab">Oficina & equipa</button>
+            <button class="tab" data-area="Administrativo" role="tab">Administrativo</button>
+            <button class="tab" data-area="Estoque e peças" role="tab">Estoque & peças</button>
+          </div>
+          <div class="toolbar">
+            <label class="search-box" aria-label="Pesquisar tarefas">
+              <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
+              <input id="searchInput" type="search" placeholder="Pesquisar tarefa..." />
+            </label>
+            <button class="filter-button" id="filterToggle" aria-expanded="false">
+              <svg viewBox="0 0 24 24"><path d="M4 6h16M7 12h10m-7 6h4"/></svg>
+              Filtros <span id="filterCount" hidden>0</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="filter-panel" id="filterPanel" hidden>
+          <label>Prioridade
+            <select id="priorityFilter">
+              <option value="all">Todas</option><option>Alta</option><option>Média</option><option>Baixa</option>
+            </select>
+          </label>
+          <label>Responsável
+            <select id="ownerFilter"><option value="all">Todos</option></select>
+          </label>
+          <button class="text-button" id="clearFilters">Limpar filtros</button>
+        </div>
+
+        <div class="active-filter" id="activeFilter" hidden>
+          <span id="activeFilterText"></span><button id="clearQuickFilter">×</button>
+        </div>
+
+        <p class="board-help">Para editar ou excluir, clique em uma tarefa. Se ela estiver ligada a uma moto, a moto e a tarefa serão excluídas juntas.</p>
+
+        <section class="restock-panel" id="restockPanel" hidden>
+          <div class="restock-head"><div><strong>Peças para pedir</strong><small>Produtos que chegaram ao estoque mínimo ou estão esgotados.</small></div><a href="estoque.html">Abrir estoque completo</a></div>
+          <div class="restock-list" id="restockList"></div>
+        </section>
+
+        <div class="board" id="board" aria-live="polite"></div>
+      </section>
+    </main>
+  </div>
+
+  <dialog id="taskDialog">
+    <form method="dialog" id="taskForm">
+      <div class="modal-head">
+        <div><p class="eyebrow">Organização da loja</p><h2 id="modalTitle">Nova tarefa</h2></div>
+        <button class="icon-button" type="button" id="closeDialog" aria-label="Fechar">×</button>
+      </div>
+      <input type="hidden" id="taskId" />
+      <label class="field full">Título da tarefa
+        <input id="taskTitle" required maxlength="80" placeholder="Ex.: Confirmar peças da Titan 160" />
+      </label>
+      <label class="field full">Descrição <small>opcional</small>
+        <textarea id="taskDescription" rows="3" maxlength="240" placeholder="Inclua detalhes importantes para quem vai executar."></textarea>
+      </label>
+      <div class="form-grid">
+        <label class="field">Área
+          <select id="taskArea" required>
+            <option>Oficina e funcionários</option><option>Administrativo</option><option>Estoque e peças</option>
+          </select>
+        </label>
+        <label class="field">Prioridade
+          <select id="taskPriority" required><option>Alta</option><option selected>Média</option><option>Baixa</option></select>
+        </label>
+        <label class="field">Responsável
+          <input id="taskOwner" required maxlength="40" placeholder="Nome da pessoa" list="ownerSuggestions" />
+          <datalist id="ownerSuggestions"><option>Caio</option><option>Equipa da oficina</option><option>Atendimento</option></datalist>
+        </label>
+        <label class="field">Prazo
+          <input id="taskDue" type="date" required />
+        </label>
+        <label class="field full">Estado
+          <select id="taskStatus" required>
+            <option value="todo">A fazer</option><option value="doing">Em andamento</option><option value="waiting">Aguardando</option><option value="done">Concluído</option>
+          </select>
+        </label>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-danger" type="button" id="deleteTask" hidden>Excluir tarefa</button>
+        <span></span>
+        <button class="btn btn-secondary" type="button" id="cancelDialog">Cancelar</button>
+        <button class="btn btn-primary" type="submit">Guardar tarefa</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script type="module" src="cloud-data.js" data-cloud-entry="app.js"></script>
+</body>
+</html>
