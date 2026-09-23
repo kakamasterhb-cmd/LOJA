@@ -4,6 +4,7 @@ const managed = key => key.startsWith('loja-') || key.startsWith('painel-loja-di
 const pendingPrefix = 'cloud-pending:';
 const nativeSet = Storage.prototype.setItem;
 const nativeRemove = Storage.prototype.removeItem;
+const nativeGet = Storage.prototype.getItem;
 const revisions = new Map();
 const queues = new Map();
 
@@ -16,10 +17,12 @@ function showBlockingError(message) {
 }
 
 async function request(method, body) {
+  const payload = body ? JSON.stringify(body) : undefined;
   const response = await fetch('/api/data', {
     method,
+    keepalive: !!payload && payload.length < 60000,
     headers: body ? { 'Content-Type': 'application/json' } : undefined,
-    body: body ? JSON.stringify(body) : undefined,
+    body: payload,
     cache: 'no-store',
   });
   const data = await response.json().catch(() => ({}));
@@ -47,13 +50,17 @@ function enqueue(key, operation) {
 
 function installCloudWrites() {
   Storage.prototype.setItem = function(key, value) {
+    const previous = nativeGet.call(this, key);
     nativeSet.call(this, key, value);
     if (this !== localStorage || !managed(String(key))) return;
+    if (previous === String(value) && nativeGet.call(localStorage, pendingPrefix + key) === null) return;
     nativeSet.call(localStorage, pendingPrefix + key, String(value));
     enqueue(String(key), async () => {
-      const saved = await request('PUT', { key: String(key), value: String(value), baseRevision: revisions.get(String(key)) || 0 });
+      const pending = nativeGet.call(localStorage, pendingPrefix + key);
+      if (pending === null) return;
+      const saved = await request('PUT', { key: String(key), value: pending, baseRevision: revisions.get(String(key)) || 0 });
       revisions.set(String(key), saved.revision);
-      nativeRemove.call(localStorage, pendingPrefix + key);
+      if (nativeGet.call(localStorage, pendingPrefix + key) === pending) nativeRemove.call(localStorage, pendingPrefix + key);
     });
   };
   Storage.prototype.removeItem = function(key) {
